@@ -24,6 +24,9 @@ jobs:
           distribution: temurin
           java-version: '17'
       -
+        name: Checkout repository
+        uses: actions/checkout@v3
+      -
         name: Login to DockerHub
         uses: docker/login-action@v3
         with:
