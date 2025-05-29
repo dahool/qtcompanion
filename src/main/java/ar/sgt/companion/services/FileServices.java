@@ -28,9 +28,6 @@ public class FileServices {
 
     private ExecutorService executor = new ThreadPoolExecutor(5, 50, 30000, TimeUnit.MILLISECONDS, new SynchronousQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
 
-    @ConfigProperty(name = "path.base.target")
-    private String baseTargetPath;
-
     @Inject
     private MailService mailService;
 
