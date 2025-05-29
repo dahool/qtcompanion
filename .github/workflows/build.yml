@@ -42,5 +42,5 @@ jobs:
           context: "{{defaultContext}}"
           platforms: linux/arm64
           push: true
-          file: "{context}/src/main/docker/Dockerfile.native-micro"
+          file: "{{context}}/src/main/docker/Dockerfile.native-micro"
           tags: dahool/qtcompanion-arm:latest
