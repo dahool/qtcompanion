@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
@@ -42,5 +39,5 @@ jobs:
           context: "{{defaultContext}}"
           platforms: linux/arm64
           push: true
-          file: "{{context}}/src/main/docker/Dockerfile.native-micro"
+          file: "./src/main/docker/Dockerfile.native-micro"
           tags: dahool/qtcompanion-arm:latest
