@@ -9,11 +9,8 @@ on:
 
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -22,7 +19,14 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
+      -
+        name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'mandrel'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Checkout repository
         uses: actions/checkout@v3
@@ -34,7 +38,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build Quarkus Native Image
-        run: mvn clean package -Pnative -Dquarkus.native.container-build=true
+        #run: mvn clean package -Pnative -Dquarkus.native.container-build=true
+        run: mvn clean package -Pnative
       -
         name: Build and Push Docker Image
         run: docker buildx build --platform linux/arm64 -f src/main/docker/Dockerfile.native-micro -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion-arm:latest . --push
