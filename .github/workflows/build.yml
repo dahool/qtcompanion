@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
@@ -34,8 +37,4 @@ jobs:
         run: mvn clean package -Pnative -Dquarkus.native.container-build=true
       -
         name: Build and Push Docker Image
-        run: docker buildx build \
-            --platform linux/arm64 \
-            -f src/main/docker/Dockerfile.native-micro \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion-arm:latest . \
-            --push
+        run: docker buildx build --platform linux/arm64 -f src/main/docker/Dockerfile.native-micro -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion-arm:latest . --push
