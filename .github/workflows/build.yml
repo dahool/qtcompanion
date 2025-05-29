@@ -34,10 +34,8 @@ jobs:
         run: mvn clean package -Pnative -Dquarkus.native.container-build=true
       -
         name: Build and Push Docker Image
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}"
-          platforms: linux/arm64
-          push: true
-          file: "./src/main/docker/Dockerfile.native-micro"
-          tags: dahool/qtcompanion-arm:latest
+        run: docker buildx build \
+            --platform linux/arm64 \
+            -f src/main/docker/Dockerfile.native-micro \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion-arm:latest . \
+            --push
