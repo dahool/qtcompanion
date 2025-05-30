@@ -37,7 +37,9 @@ public class FileServices {
     @Inject
     private MessageService messages;
 
-    public List<FileItem> listFileMatching(final File dir, final FilenameFilter filter) {
+    @Inject
+    private LibraryRefreshService libraryService;
+        public List<FileItem> listFileMatching(final File dir, final FilenameFilter filter) {
 
         LOG.info("Listing files on {}", dir);
 
@@ -143,6 +145,7 @@ public class FileServices {
                     messages.addMessage(MessageDto.forError("Error copying " + file));
                 }
             });
+            libraryService.requestLibraryRefresh();
             mailService.sendMail(
                     "Copy Files Complete" + (hasError.get() ? " with errors" : ""),
                         b.toString());

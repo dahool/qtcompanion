@@ -16,6 +16,7 @@ public class CopyEventListener {
     private FileServices services;
 
     public void onFileCopyEvent(@Observes FileCopyDto dto) {
+        LOG.info("Queue {}", dto);
         services.copyFiles(dto);
     }
 
