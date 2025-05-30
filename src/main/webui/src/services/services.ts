@@ -1,5 +1,5 @@
 import { Observable } from "rxjs"
-import type { FileItem } from "./model"
+import type { FileItem, Message } from "./model"
 import axios, { type AxiosInstance } from "axios";
 
 const BASE_URL = '/'; //'http://localhost:9080/'
@@ -34,7 +34,7 @@ export async function moveFiles(source: string[], target: string): Promise<void>
     })
 }
 
-export function getMessages(): Observable<string> {
+export function getMessages(): Observable<Message> {
     return new Observable<string>(subscriber => {
         const eventSource = new EventSource(BASE_URL + 'files/messages');
         eventSource.onmessage = (event: MessageEvent) => {

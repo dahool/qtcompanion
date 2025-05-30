@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import ar.sgt.companion.rest.dto.FileCopyDto;
+import ar.sgt.companion.rest.dto.MessageDto;
 import io.quarkus.qute.i18n.Message;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -27,6 +28,8 @@ public class FileServices {
     private static final Logger LOG = LoggerFactory.getLogger(FileServices.class);
 
     private ExecutorService executor = new ThreadPoolExecutor(5, 50, 30000, TimeUnit.MILLISECONDS, new SynchronousQueue<>(), new ThreadPoolExecutor.CallerRunsPolicy());
+
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
     @Inject
     private MailService mailService;
@@ -123,7 +126,7 @@ public class FileServices {
     }
 
     public void copyFiles(final FileCopyDto dto) {
-        executor.submit(() -> {
+        singleThreadExecutor.submit(() -> {
             final AtomicBoolean hasError = new AtomicBoolean(false);
             final StringBuilder b = new StringBuilder();
             dto.files.stream().map(Paths::get).forEach(file -> {
@@ -132,12 +135,12 @@ public class FileServices {
                     Files.copy(file, Paths.get(dto.target, file.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING,  StandardCopyOption.COPY_ATTRIBUTES);
                     b.append("Copied ").append(file).append("\n");
                     LOG.debug("Copied {}", file);
-                    messages.addMessage("Copied " + file);
+                    messages.addMessage(MessageDto.forSuccess("Copied " + file));
                 } catch (IOException e) {
                     hasError.set(true);
                     b.append("Error copying ").append(file).append(": ").append(e.getMessage()).append("\n");
                     LOG.error("Error copying file", e);
-                    messages.addMessage("Error copying " + file);
+                    messages.addMessage(MessageDto.forError("Error copying " + file));
                 }
             });
             mailService.sendMail(

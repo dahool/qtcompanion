@@ -5,9 +5,11 @@ import java.io.FilenameFilter;
 import java.util.List;
 
 import ar.sgt.companion.rest.dto.FileCopyDto;
+import ar.sgt.companion.rest.dto.MessageDto;
 import ar.sgt.companion.rest.dto.MkDirDto;
 import ar.sgt.companion.services.MessageService;
 import io.smallrye.mutiny.Multi;
+import jakarta.enterprise.event.Event;
 import jakarta.ws.rs.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -31,6 +33,9 @@ public class FileServiceController {
 
     @Inject
     private MessageService messages;
+
+    @Inject
+    private Event<FileCopyDto> fileCopyDtoEvent;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,14 +61,15 @@ public class FileServiceController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void copyFiles(FileCopyDto dto) {
-        fileServices.copyFiles(dto);
+        //fileServices.copyFiles(dto);
+        fileCopyDtoEvent.fire(dto);
     }
 
     @GET
-    @RestStreamElementType(MediaType.TEXT_PLAIN)
+    @RestStreamElementType(MediaType.APPLICATION_JSON)
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @Path("messages")
-    public Multi<String> listMessages() {
+    public Multi<MessageDto> listMessages() {
         return Multi.createFrom()
                         .emitter(e -> {
                             messages.setEmitter(e);
@@ -74,7 +80,7 @@ public class FileServiceController {
     @GET
     @Path("test-message")
     public void sendTestMessage() {
-        messages.addMessage("This is a test broadcast message");
+        messages.addMessage(new MessageDto("info", "This is a test broadcast message"));
     }
 
     @PUT

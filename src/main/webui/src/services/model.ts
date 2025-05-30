@@ -1,7 +1,7 @@
 
-export interface Status {
+export interface Message {
+    type: string;
     message: string;
-    progress: number;
 }
 
 export interface FileItem {

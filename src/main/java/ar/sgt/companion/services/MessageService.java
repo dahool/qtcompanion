@@ -1,5 +1,6 @@
 package ar.sgt.companion.services;
 
+import ar.sgt.companion.rest.dto.MessageDto;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.MultiEmitter;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,14 +21,14 @@ public class MessageService {
     private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 
     // yes, I want this to be static!
-    private static final Queue<String> messages = new ConcurrentLinkedQueue<>();
+    private static final Queue<MessageDto> messages = new ConcurrentLinkedQueue<>();
 
-    private volatile MultiEmitter<? super String> emitter;
+    private volatile MultiEmitter<? super MessageDto> emitter;
 
     @Inject
     private Sse sse;
 
-    public void setEmitter(MultiEmitter<? super String> emitter) {
+    public void setEmitter(MultiEmitter<? super MessageDto> emitter) {
         this.emitter = emitter;
         if (this.emitter != null) {
             LOG.debug("Client connected");
@@ -39,7 +40,7 @@ public class MessageService {
         }
     }
 
-    public void addMessage(String message) {
+    public void addMessage(MessageDto message) {
         if (this.emitter != null && !this.emitter.isCancelled()) {
             LOG.debug("Broadcasting message {} to emitter", message);
             this.emitter.emit(message);

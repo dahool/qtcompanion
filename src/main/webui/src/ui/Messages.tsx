@@ -1,16 +1,17 @@
-import { Alert, Snackbar } from "@mui/material"
+import { Alert, Snackbar, type AlertColor } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { getMessages } from "../services/services"
+import type { Message } from "../services/model"
 
 export default function Messages() {
 
-    const [messageQueue, setMessageQueue] = useState<string[]>([]);
-    const [currentMessage, setCurrentMessage] = useState<string | null>(null);
+    const [messageQueue, setMessageQueue] = useState<Message[]>([]);
+    const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
     const [snackBarOpen, setSnackbarOpen] = useState(false);
 
     useEffect(() => {
         const messageSub = getMessages().subscribe({
-            next: (message: string) => {
+            next: (message: Message) => {
                 setMessageQueue(prev => [...prev, message]);
             },
             error: (err) => {
@@ -44,11 +45,11 @@ export default function Messages() {
     return (
       <Snackbar open={snackBarOpen} autoHideDuration={1500} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert
-          severity="info"
+          severity={currentMessage?.type as AlertColor}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          {currentMessage}
+          {currentMessage?.message}
         </Alert>
       </Snackbar>
     );

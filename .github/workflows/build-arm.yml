@@ -41,4 +41,4 @@ jobs:
         run: mvn clean package -Pnative
       -
         name: Build and Push Docker Image
-        run: docker buildx build --platform linux/arm64 -f src/main/docker/Dockerfile.native-micro -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion-arm:latest . --push
+        run: docker buildx build --platform linux/arm64 -f src/main/docker/Dockerfile.native-micro -t ${{ secrets.DOCKERHUB_USERNAME }}/qtcompanion:arm-latest . --push
