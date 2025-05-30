@@ -35,7 +35,7 @@ export async function moveFiles(source: string[], target: string): Promise<void>
 }
 
 export function getMessages(): Observable<Message> {
-    return new Observable<string>(subscriber => {
+    return new Observable<Message>(subscriber => {
         const eventSource = new EventSource(BASE_URL + 'files/messages');
         eventSource.onmessage = (event: MessageEvent) => {
             subscriber.next(event.data);
