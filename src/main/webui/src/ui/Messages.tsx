@@ -3,6 +3,29 @@ import { useCallback, useEffect, useState } from "react"
 import { getMessages } from "../services/services"
 import type { Message } from "../services/model"
 
+const displayNotification = (message: Message) => {
+    console.log("Displaying notification:", message);
+    new Notification(message.message, { icon: `/${message.type}.png` });
+}
+
+const sendBrowserNotification = (message: Message) => {
+    console.log("Sending browser notification:", message);
+    console.log("Notification permission status:", Notification.permission);
+    if (!("Notification" in window)) {
+        console.error("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+        displayNotification(message);
+    } else if (Notification.permission !== "denied") {
+        console.log("Requesting notification permission");
+        Notification.requestPermission().then((permission) => {
+            console.log("Notification permission:", permission);
+            if (permission === "granted") {
+                displayNotification(message);
+            }
+        });
+    }
+}
+
 export default function Messages() {
 
     const [messageQueue, setMessageQueue] = useState<Message[]>([]);
@@ -37,6 +60,7 @@ export default function Messages() {
             const nextMessage = messageQueue[0];
             setMessageQueue(prev => prev.slice(1));
             setCurrentMessage(nextMessage);
+            sendBrowserNotification(nextMessage);
             setSnackbarOpen(true);
         }
     }, [messageQueue, snackBarOpen]);

@@ -38,7 +38,7 @@ export function getMessages(): Observable<Message> {
     return new Observable<Message>(subscriber => {
         const eventSource = new EventSource(BASE_URL + 'files/messages');
         eventSource.onmessage = (event: MessageEvent) => {
-            subscriber.next(event.data);
+            subscriber.next(JSON.parse(event.data));
         };
         eventSource.onerror = (_event: Event) => {
             subscriber.error(new Error('Error'));

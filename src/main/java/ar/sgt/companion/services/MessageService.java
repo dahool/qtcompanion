@@ -20,8 +20,7 @@ public class MessageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 
-    // yes, I want this to be static!
-    private static final Queue<MessageDto> messages = new ConcurrentLinkedQueue<>();
+    private final Queue<MessageDto> messages = new ConcurrentLinkedQueue<>();
 
     private volatile MultiEmitter<? super MessageDto> emitter;
 
