@@ -2,6 +2,7 @@ import { Alert, Snackbar, type AlertColor } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { getMessages } from "../services/services"
 import type { Message } from "../services/model"
+import { SnackbarProvider, enqueueSnackbar, type BaseVariant } from 'notistack';
 
 const displayNotification = (message: Message) => {
     console.log("Displaying notification:", message);
@@ -27,15 +28,16 @@ const sendBrowserNotification = (message: Message) => {
 }
 
 export default function Messages() {
-
+/*
     const [messageQueue, setMessageQueue] = useState<Message[]>([]);
     const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
     const [snackBarOpen, setSnackbarOpen] = useState(false);
-
+*/
     useEffect(() => {
         const messageSub = getMessages().subscribe({
             next: (message: Message) => {
-                setMessageQueue(prev => [...prev, message]);
+                //setMessageQueue(prev => [...prev, message]);
+                enqueueSnackbar(message.message, { variant: message.type as BaseVariant })
             },
             error: (err) => {
                 console.error("Error receiving messages:", err);
@@ -47,7 +49,7 @@ export default function Messages() {
         };
 
     }, []);
-
+/*
     const handleSnackbarClose = useCallback((_event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
@@ -64,9 +66,11 @@ export default function Messages() {
             setSnackbarOpen(true);
         }
     }, [messageQueue, snackBarOpen]);
-
+*/
 
     return (
+        <SnackbarProvider autoHideDuration={5000} maxSnack={5} anchorOrigin={{ horizontal: "right", vertical: "top" }} variant={'default'}/>
+        /*
       <Snackbar open={snackBarOpen} autoHideDuration={1500} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert
           severity={currentMessage?.type as AlertColor}
@@ -75,7 +79,7 @@ export default function Messages() {
         >
           {currentMessage?.message}
         </Alert>
-      </Snackbar>
+      </Snackbar>*/
     );
 
 }

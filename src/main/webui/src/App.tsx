@@ -4,8 +4,9 @@ import { IconArrowPathRightFill } from '@intentui/icons'
 import { useState } from 'react'
 import AlertFail from './ui/AlertFail'
 import { moveFiles } from './services/services'
-import { Alert, Button, Snackbar } from '@mui/material'
+import { Alert, Button, Fab, Snackbar } from '@mui/material'
 import Messages from './ui/Messages'
+import MessageBox from './ui/MessageBox'
 
 export default function App() {
 
@@ -36,6 +37,7 @@ export default function App() {
   return (
     <>
       <Messages/>
+      {/*<MessageBox/>*/}
       <AlertFail show={showAlert}>
         <span>Select source and target</span>
       </AlertFail>
@@ -54,7 +56,7 @@ export default function App() {
           <div className="w-2 mt-2"></div>
           <div className="w-full h-1/2 md:w-1/2 md:h-full"><FileTarget/></div>
         </div>
-        <div className="flex justify-center mt-4"><Button variant="contained" onClick={startMoveFiles} className='cursor-pointer'>Copy<IconArrowPathRightFill className="ml-2"/></Button></div>
+        <div className="flex justify-center mt-4"><Button variant="contained" onClick={startMoveFiles} className='cursor-pointer z-90'>Copy<IconArrowPathRightFill className="ml-2"/></Button></div>
       </div>
     </>
   )
